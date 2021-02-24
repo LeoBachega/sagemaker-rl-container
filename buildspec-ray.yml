@@ -34,7 +34,7 @@ phases:
         echo '  ServerAliveCountMax 300' >> ~/.ssh/config
   build:
     commands:
-      # install
+      # installi - test
       - echo "install"
       - pip3 install -U -e .
       # Update awscli for compatibility with the latest botocore version that breaks it
