@@ -1,24 +1,4 @@
-#ARG processor
-#ARG region
-#ARG suffix
-
-FROM 763104351884.dkr.ecr.us-west-2.amazonaws.com/pytorch-training:1.5.0-cpu-py36-ubuntu:16.04
-
-#RUN apt-get update && apt-get install -y --no-install-recommends \
-#        build-essential \
-#        jq \
-#        ffmpeg \
-#        rsync \
-#        libjpeg-dev \
-#        libxrender1 \
-#        python3-opengl \
-#        wget \
-#        xvfb && \
-#    apt-get clean && \
-#    rm -rf /var/lib/apt/lists/*
-#
-
-#FROM ubuntu:16.04
+FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
@@ -31,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends software-proper
         curl \
         nginx \
         wget;
-#        python3.6-dev && ln -s -f /usr/bin/python3.6 /usr/bin/python;
+        python3.6-dev && ln -s -f /usr/bin/python3.6 /usr/bin/python;
 
 RUN cd /usr/lib/x86_64-linux-gnu/ && ln -s libboost_python-py35.so libboost_python3.so
 
