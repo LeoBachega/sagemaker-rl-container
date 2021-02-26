@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends software-proper
         git \
         curl \
         nginx \
-        wget;
+        wget \
         python3.6-dev && ln -s -f /usr/bin/python3.6 /usr/bin/python;
 
 RUN cd /usr/lib/x86_64-linux-gnu/ && ln -s libboost_python-py35.so libboost_python3.so
