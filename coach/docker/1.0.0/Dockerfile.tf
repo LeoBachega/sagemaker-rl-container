@@ -3,7 +3,7 @@ ARG region
 FROM 520713654638.dkr.ecr.$region.amazonaws.com/sagemaker-tensorflow-scriptmode:1.12.0-$processor-py3
 
 
-RUN apt-get remove "^python*"
+RUN apt-get -y remove "^python*"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \

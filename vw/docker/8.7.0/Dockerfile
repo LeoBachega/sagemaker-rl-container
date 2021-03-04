@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-RUN apt-get remove "^python*"
+RUN apt-get -y remove "^python*"
 
 RUN apt-get update && apt-get install -y --no-install-recommends software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
