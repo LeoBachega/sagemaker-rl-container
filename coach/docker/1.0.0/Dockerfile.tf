@@ -2,6 +2,9 @@ ARG processor
 ARG region
 FROM 520713654638.dkr.ecr.$region.amazonaws.com/sagemaker-tensorflow-scriptmode:1.12.0-$processor-py3
 
+
+RUN apt-get remove "^python*"
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         jq \
@@ -14,6 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
 
 # Install Redis.
 RUN cd /tmp && \
