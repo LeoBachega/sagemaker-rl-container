@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     RAY_TOOLKIT_VERSION: '1.1.0'
-    RAY_TF_FRAMEWORK_VERSION: '2.3.1'
+    RAY_TF_FRAMEWORK_VERSION: '2.4.1'
     RAY_TORCH_FRAMEWORK_VERSION: '1.6.0'
     CPU_INSTANCE_TYPE: 'ml.c5.xlarge'
     GPU_INSTANCE_TYPE: 'ml.p2.xlarge'
