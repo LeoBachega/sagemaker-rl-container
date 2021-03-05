@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg-dev \
         libxrender1 \
         python3.5 \
+        python3.6 \
         python3.6-dev \
         python3-opengl \
         wget \
