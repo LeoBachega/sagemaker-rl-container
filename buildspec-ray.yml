@@ -57,7 +57,6 @@ phases:
 
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION --registry-ids $FRAMEWORK_BASE_IMAGE_ACCOUNT)
       - |
-      # define base image once. it should be passed as a parameter to Dockerfile
         TF_BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$RAY_TF_FRAMEWORK_VERSION-cpu-py$PY_VERSION-ubuntu18.04"
         BUILD_ID="$(echo $CODEBUILD_BUILD_ID | sed -e 's/:/-/g')"
 
