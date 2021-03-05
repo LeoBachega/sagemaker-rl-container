@@ -2,15 +2,13 @@ ARG processor
 ARG region
 FROM 520713654638.dkr.ecr.$region.amazonaws.com/sagemaker-tensorflow-scriptmode:1.12.0-$processor-py3
 
-
-RUN apt-get -y remove "^python*"
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         jq \
         libav-tools \
         libjpeg-dev \
         libxrender1 \
+        python3.5 \
         python3.6-dev \
         python3-opengl \
         wget \
@@ -29,25 +27,10 @@ RUN cd /tmp && \
     make install
 
 RUN pip install --no-cache-dir \
-    annoy>=1.8.3 \
-    Pillow>=7.1.0 \
-    pillow>=6.2.0 \
-    matplotlib>=2.0.2 \
-    numpy>=1.14.5 \
-    pandas>=0.22.0 \
-    pygame>=1.9.3 \
-    PyOpenGL>=3.1.0 \
-    scipy>=0.19.0 \
-    scikit-image>=0.13.0 \
-    gym==0.12.5 \
-    bokeh==1.0.4 \
-    kubernetes==8.0.1 \
-    redis>=2.10.6 \
-    minio>=4.0.5 \
-    pytest>=3.8.2 \
-    psutil>=5.5.0 \
+    PyOpenGL==3.1.0 \
     pyglet==1.3.2 \
-    tensorboard>=1.13.0 \
+    gym==0.12.5 \
+    redis==2.10.6 \
     rl-coach-slim==1.0.0 && \
     pip install --no-cache-dir --upgrade sagemaker-containers && \
     pip install --upgrade numpy
