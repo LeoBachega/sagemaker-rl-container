@@ -1,8 +1,6 @@
-ARG processor
-ARG region
-ARG suffix
+ARG baseimage
 
-FROM 763104351884.dkr.ecr.$region.amazonaws.com/tensorflow-training:2.1.0-$processor-py36-$suffix
+FROM $baseimage 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
