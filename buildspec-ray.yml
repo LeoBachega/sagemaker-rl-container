@@ -16,7 +16,7 @@ env:
     SETUP_CMDS: '#!/bin/bash\npip install --upgrade pip\npip install -U -e .'
     TEST_USER: 'LeoBachega'
     TEST_BRANCH: 'ray_tf_2_4'
-    PROCESSOR: 'cpu'
+    PROCESSOR: 'gpu'
 phases:
   pre_build:
     commands:
@@ -57,7 +57,7 @@ phases:
 
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION --registry-ids $FRAMEWORK_BASE_IMAGE_ACCOUNT)
       - |
-        TF_BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$RAY_TF_FRAMEWORK_VERSION-cpu-py$PY_VERSION-ubuntu18.04"
+        TF_BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$RAY_TF_FRAMEWORK_VERSION-gpu-py$PY_VERSION-ubuntu18.04"
         BUILD_ID="$(echo $CODEBUILD_BUILD_ID | sed -e 's/:/-/g')"
 
       # pull tf cpu base images
