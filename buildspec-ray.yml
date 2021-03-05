@@ -108,7 +108,7 @@ phases:
           if has-matching-changes "test/" "tests/" "src/*.py" "ray/*" "buildspec-ray.yml"; then
             if [ "$AWS_DEFAULT_REGION" = "us-west-2" ]; then
               printf "$SETUP_CMDS" > $SETUP_FILE
-              cmd="pytest test/integration/local -k 'test_ray' --region $AWS_DEFAULT_REGION --toolkit ray --framework tensorflow --docker-base-name $PREPROD_IMAGE --tag $RAY_TF_GPU_TAG_BUILD_ID --processor gpu"
+              cmd="pytest test/integration/local -k 'test_ray' --region $AWS_DEFAULT_REGION --toolkit ray --framework tensorflow --docker-base-name $PREPROD_IMAGE --tag $RAY_TF_TAG_BUILD_ID --processor gpu"
               remote-test --github-user $TEST_USER --github-repo $GITHUB_REPO --branch $TEST_BRANCH --test-cmd "$cmd" --setup-file $SETUP_FILE
             fi
           else
