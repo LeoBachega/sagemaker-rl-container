@@ -8,15 +8,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libav-tools \
         libjpeg-dev \
         libxrender1 \
-        python3.5 \
         python3.6-dev \
         python3-opengl \
         wget \
         xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
 
 # Install Redis.
 RUN cd /tmp && \
