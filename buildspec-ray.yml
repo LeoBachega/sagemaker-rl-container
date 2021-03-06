@@ -3,7 +3,6 @@ version: 0.2
 env:
   variables:
     RAY_TOOLKIT_VERSION: '1.1.0'
-    RAY_TF_FRAMEWORK_VERSION: '2.1.0'
     CPU_INSTANCE_TYPE: 'ml.c4.xlarge'
     GPU_INSTANCE_TYPE: 'ml.p2.xlarge'
     PY_VERSION: '36'
@@ -17,6 +16,9 @@ env:
     TEST_USER: 'LeoBachega'
     TEST_BRANCH: 'ray_tf_2_4'
     PROCESSOR: 'gpu'
+    FRAMEWORK: 'tensorflow'
+    FRAMEWORK_VERSION: '2.1.0'
+    FRAMEWORK_SHORT: 'tf'
 phases:
   pre_build:
     commands:
@@ -26,7 +28,9 @@ phases:
         BASE_IMAGE="$ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$BASE_ECR_REPO"
         PREPROD_IMAGE="$ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PREPROD_ECR_REPO"
         PROD_IMAGE="$ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROD_ECR_REPO"
-
+      # base image
+      - |
+        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:FRAMEWORK_VERSION-gpu-py$PY_VERSION-cu101-ubuntu18.04"
 
         # PR_NUM=$(echo $CODEBUILD_SOURCE_VERSION | grep -o '[0-9]\+')
       # keep ssh connection alive when communicating with remote ec2 server during integ test
@@ -57,34 +61,33 @@ phases:
 
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION --registry-ids $FRAMEWORK_BASE_IMAGE_ACCOUNT)
       - |
-        TF_BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$RAY_TF_FRAMEWORK_VERSION-gpu-py$PY_VERSION-cu101-ubuntu18.04"
         BUILD_ID="$(echo $CODEBUILD_BUILD_ID | sed -e 's/:/-/g')"
 
       # pull tf cpu base images
       - echo "pull tf cpu base images"
       - |
-        docker pull $TF_BASE_IMAGE
+        docker pull $BASE_IMAGE
 
 
       # build ray tf preprod cpu images
       - echo "build ray tf preprod cpu images"
       - |
-        RAY_TF_TAG="ray-$RAY_TOOLKIT_VERSION-tf-$PROCESSOR-py$PY_VERSION"
-        RAY_TF_TAG_BUILD_ID="$RAY_TF_TAG-$BUILD_ID"
+        RAY_TAG="ray-$RAY_TOOLKIT_VERSION-$FRAMEWORK_SHORT-$PROCESSOR-py$PY_VERSION"
+        RAY_TAG_BUILD_ID="$RAY_TAG-$BUILD_ID"
 
         echo "pulling previous_image $BASE_IMAGE:$RAY_TF_CPU_TAG for layer cache..."
         $(aws ecr get-login --registry-ids $ACCOUNT --no-include-email --region $AWS_DEFAULT_REGION)
-        docker pull $BASE_IMAGE:$RAY_TF_TAG
-        docker build --cache-from $BASE_IMAGE:$RAY_TF_TAG \
-                     -t $PREPROD_IMAGE:$RAY_TF_TAG_BUILD_ID \
-                     -f ray/docker/$RAY_TOOLKIT_VERSION/Dockerfile.tf \
-                     --build-arg baseimage=$TF_BASE_IMAGE .
+        docker pull $BASE_IMAGE:$RAY_TAG
+        docker build --cache-from $BASE_IMAGE:$RAY_TAG \
+                     -t $PREPROD_IMAGE:$RAY_TAG_BUILD_ID \
+                     -f ray/docker/$RAY_TOOLKIT_VERSION/Dockerfile.$FRAMEWORK_SHORT \
+                     --build-arg baseimage=$BASE_IMAGE .
 
       # push ray tf preprod cpu images to ecr
       - echo "push ray tf preprod cpu images to ecr"
       - |
         $(aws ecr get-login --registry-ids $ACCOUNT --no-include-email --region $AWS_DEFAULT_REGION)
-        docker push $PREPROD_IMAGE:$RAY_TF_TAG_BUILD_ID
+        docker push $PREPROD_IMAGE:$RAY_TAG_BUILD_ID
 
       # run cpu integration tests for ray tf preprod cpu images
       - echo "run local integration tests for ray tf preprod images"
@@ -96,8 +99,8 @@ phases:
                     -k "test_ray" \
                     --region $AWS_DEFAULT_REGION \
                     --docker-base-name $PREPROD_IMAGE \
-                    --tag $RAY_TF_TAG_BUILD_ID \
-                    --framework tensorflow  \
+                    --tag $RAY_TAG_BUILD_ID \
+                    --framework $FRAMEWORK  \
                     --toolkit ray \
                     --processor cpu
           else
@@ -108,7 +111,7 @@ phases:
           if has-matching-changes "test/" "tests/" "src/*.py" "ray/*" "buildspec-ray.yml"; then
             if [ "$AWS_DEFAULT_REGION" = "us-west-2" ]; then
               printf "$SETUP_CMDS" > $SETUP_FILE
-              cmd="pytest test/integration/local -k 'test_ray' --region $AWS_DEFAULT_REGION --toolkit ray --framework tensorflow --docker-base-name $PREPROD_IMAGE --tag $RAY_TF_TAG_BUILD_ID --processor gpu"
+              cmd="pytest test/integration/local -k 'test_ray' --region $AWS_DEFAULT_REGION --toolkit ray --framework $FRAMEWORK --docker-base-name $PREPROD_IMAGE --tag $RAY_TAG_BUILD_ID --processor gpu"
               remote-test --github-user $TEST_USER --github-repo $GITHUB_REPO --branch $TEST_BRANCH --test-cmd "$cmd" --setup-file $SETUP_FILE
             fi
           else
@@ -117,43 +120,7 @@ phases:
         fi
 
 
-      # run cpu sagemaker tests for ray tf preprod cpu images
-#      - echo "run cpu sagemaker tests for ray tf preprod cpu images"
-#      - |
-#        if has-matching-changes "test/" "tests/" "src/*.py" "docker/*" "buildspec-ray.yml"; then
-#          pytest test/integration/sagemaker \
-#                  -k "test_ray" \
-#                  --region $AWS_DEFAULT_REGION \
-#                  --docker-base-name $PREPROD_ECR_REPO \
-#                  --aws-id $ACCOUNT \
-#                  --tag $RAY_TF_CPU_TAG_BUILD_ID \
-#                  --framework tensorflow \
-#                  --toolkit ray \
-#                  --instance-type $CPU_INSTANCE_TYPE
-#        else
-#          echo "skipping cpu sagemaker tests"
-#        fi
-
-
-      # run gpu sagemaker tests for ray tf preprod cpu images
-#      - echo "run gpu sagemaker tests for ray tf preprod cpu images"
-#      - |
-#        if has-matching-changes "test/" "tests/" "src/*.py" "docker/*" "buildspec-ray.yml"; then
-#          if [ "$AWS_DEFAULT_REGION" = "us-west-2" ]; then
-#            pytest test/integration/sagemaker \
-#                    -k "test_ray" \
-#                    --region $AWS_DEFAULT_REGION \
-#                    --docker-base-name $PREPROD_ECR_REPO \
-#                    --aws-id $ACCOUNT \
-#                    --tag $RAY_TF_GPU_TAG_BUILD_ID \
-#                    --framework tensorflow \
-#                    --toolkit ray \
-#                    --instance-type $GPU_INSTANCE_TYPE
-#          fi
-#        else
-#          echo "skipping gpu sagemaker tests"
-#        fi
-
+      # add pre-prod tests here 
 
       # publish cpu and gpu image to prod ecr repo if this is release build 
       - |
@@ -161,9 +128,9 @@ phases:
           
           $(aws ecr get-login --registry-ids $ACCOUNT --no-include-email --region $AWS_DEFAULT_REGION)
           
-          aws ecr batch-delete-image --repository-name $PROD_ECR_REPO --region $AWS_DEFAULT_REGION --image-ids imageTag=$RAY_TF_TAG
-          docker tag $PREPROD_IMAGE:$RAY_TF_TAG_BUILD_ID $PROD_IMAGE:$RAY_TF_TAG
-          docker push $PROD_IMAGE:$RAY_TF_TAG
+          aws ecr batch-delete-image --repository-name $PROD_ECR_REPO --region $AWS_DEFAULT_REGION --image-ids imageTag=$RAY_TAG
+          docker tag $PREPROD_IMAGE:$RAY_TAG_BUILD_ID $PROD_IMAGE:$RAY_TAG
+          docker push $PROD_IMAGE:$RAY_TAG
 
         else
           echo "skipping publishing new image to production repo"
@@ -182,4 +149,4 @@ phases:
 
       # remove ecr image
       - |
-        aws ecr batch-delete-image --repository-name $PREPROD_ECR_REPO --region $AWS_DEFAULT_REGION --image-ids imageTag=$RAY_TF_TAG_BUILD_ID
+        aws ecr batch-delete-image --repository-name $PREPROD_ECR_REPO --region $AWS_DEFAULT_REGION --image-ids imageTag=$RAY_TAG_BUILD_ID
