@@ -31,9 +31,8 @@ phases:
         PROD_IMAGE="$ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROD_ECR_REPO"
       # base image
       - |
-        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:FRAMEWORK_VERSION-gpu-py$PY_VERSION-cu101-ubuntu18.04"
+        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$FRAMEWORK_VERSION-gpu-py$PY_VERSION-cu101-ubuntu18.04"
 
-        # PR_NUM=$(echo $CODEBUILD_SOURCE_VERSION | grep -o '[0-9]\+')
       # keep ssh connection alive when communicating with remote ec2 server during integ test
       # largest connection idle time allowed: 10 seconds * 300 attempts = 50 minutes
       - |
