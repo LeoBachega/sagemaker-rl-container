@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir \
     tabulate \
     tensorboardX \
     gputil \
-    gym \
+    gym=0.18.0 \
     lz4 \
     opencv-python-headless \
     PyOpenGL==3.1.0 \
@@ -43,7 +43,7 @@ RUN pip install --no-cache-dir \
 RUN pip install dataclasses
 
 # https://github.com/aws/sagemaker-rl-container/issues/39
-RUN pip install pyglet==1.3.2
+RUN pip install pyglet==1.4.10
 
 # https://click.palletsprojects.com/en/7.x/python3/
 ENV LC_ALL=C.UTF-8

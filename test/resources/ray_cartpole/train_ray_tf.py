@@ -10,7 +10,7 @@ config = ppo.DEFAULT_CONFIG.copy()
 config["num_gpus"] = int(os.environ.get("SM_NUM_GPUS", 0))
 checkpoint_dir = os.environ.get("SM_MODEL_DIR", '/Users/nadzeya/gym')
 config["num_workers"] = 1
-config["framework"] = "tf2"
+config["framework"] = "tf"
 trainer = ppo.PPOTrainer(config=config, env="CartPole-v0")
 
 # Can optionally call agent.restore(path) to load a checkpoint.
