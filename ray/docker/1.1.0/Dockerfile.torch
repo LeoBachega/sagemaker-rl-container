@@ -1,3 +1,5 @@
+ARG baseimage
+
 FROM $baseimage 
 
 RUN conda install python=3.6.13
