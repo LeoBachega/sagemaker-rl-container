@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir \
     tabulate \
     tensorboardX \
     gputil \
-    gym=0.18.0 \
+    gym==0.18.0 \
     lz4 \
     opencv-python-headless \
     PyOpenGL==3.1.0 \
