@@ -1,8 +1,4 @@
-ARG processor
-ARG region
-ARG suffix
-
-FROM 763104351884.dkr.ecr.$region.amazonaws.com/pytorch-training:1.5.0-$processor-py36-$suffix
+FROM $baseimage 
 
 RUN conda install python=3.6.13
 
