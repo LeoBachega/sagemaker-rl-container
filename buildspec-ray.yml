@@ -15,7 +15,7 @@ env:
     SETUP_CMDS: '#!/bin/bash\npip install --upgrade pip\npip install -U -e .'
     TEST_USER: 'LeoBachega'
     TEST_BRANCH: 'ray_tf_2_4'
-    PROCESSOR: 'cpu'
+    PROCESSOR: 'gpu'
     FRAMEWORK: 'tensorflow'
     FRAMEWORK_VERSION: '2.4.1'
     FRAMEWORK_SHORT: 'tf'
@@ -31,7 +31,7 @@ phases:
         PROD_IMAGE="$ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROD_ECR_REPO"
       # base image
       - |
-        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$FRAMEWORK_VERSION-cpu-py$PY_VERSION-ubuntu18.04"
+        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$FRAMEWORK_VERSION-gpu-py$PY_VERSION-cu100-ubuntu18.04"
 
       # keep ssh connection alive when communicating with remote ec2 server during integ test
       # largest connection idle time allowed: 10 seconds * 300 attempts = 50 minutes
