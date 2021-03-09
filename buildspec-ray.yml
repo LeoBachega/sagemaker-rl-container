@@ -5,7 +5,6 @@ env:
     RAY_TOOLKIT_VERSION: '1.1.0'
     CPU_INSTANCE_TYPE: 'ml.c4.xlarge'
     GPU_INSTANCE_TYPE: 'ml.p2.xlarge'
-    PY_VERSION: '37'
     BASE_ECR_REPO: 'sagemaker-rl-ray-container-new-tf'    # previous images repo for layer cache, same name as pro image repo
     PREPROD_ECR_REPO: 'sagemaker-test'
     PROD_ECR_REPO: 'sagemaker-rl-ray-container-new-tf'
@@ -16,9 +15,11 @@ env:
     TEST_USER: 'LeoBachega'
     TEST_BRANCH: 'ray_tf_2_4'
     PROCESSOR: 'gpu'
+    FRAMEWORK_VERSION: '2.1.0'
     FRAMEWORK: 'tensorflow'
-    FRAMEWORK_VERSION: '2.4.1'
     FRAMEWORK_SHORT: 'tf'
+    PY_VERSION: '36'
+    OS: 'cu101-ubuntu18.04'
 
 phases:
   pre_build:
@@ -31,7 +32,8 @@ phases:
         PROD_IMAGE="$ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROD_ECR_REPO"
       # base image
       - |
-        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/tensorflow-training:$FRAMEWORK_VERSION-gpu-py$PY_VERSION-cu100-ubuntu18.04"
+        BASE_IMAGE_TAG="$FRAMEWORK-training:$FRAMEWORK_VERSION-$PROCESSOR-py$PY_VERSION-$OS"
+        BASE_IMAGE="$FRAMEWORK_BASE_IMAGE_ACCOUNT.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$BASE_IMAGE_TAG"
 
       # keep ssh connection alive when communicating with remote ec2 server during integ test
       # largest connection idle time allowed: 10 seconds * 300 attempts = 50 minutes
