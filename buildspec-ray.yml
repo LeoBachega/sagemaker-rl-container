@@ -174,7 +174,7 @@ phases:
                      -t $PREPROD_IMAGE:$RAY_TF_GPU_TAG_BUILD_ID \
                      -f ray/docker/$RAY_TOOLKIT_VERSION/Dockerfile.tf \
                      --build-arg processor=gpu \
-                     --build-arg suffix=cu101-ubuntu18.04 \
+                     --build-arg suffix=cu102-ubuntu18.04 \
                      --build-arg region=$AWS_DEFAULT_REGION .
 
       # push ray tf preprod gpu images to ecr
