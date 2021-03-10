@@ -2,7 +2,7 @@ ARG processor
 ARG region
 ARG suffix
 
-FROM 763104351884.dkr.ecr.$region.amazonaws.com/tensorflow-training:2.1.0-$processor-py36-$suffix
+FROM 763104351884.dkr.ecr.$region.amazonaws.com/tensorflow-training:2.3.1-$processor-py37-$suffix
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir \
     tabulate \
     tensorboardX \
     gputil \
-    gym \
+    gym==0.18.0 \
     lz4 \
     opencv-python-headless \
     PyOpenGL==3.1.0 \
@@ -45,7 +45,7 @@ RUN pip install --no-cache-dir \
 RUN pip install dataclasses
 
 # https://github.com/aws/sagemaker-rl-container/issues/39
-RUN pip install pyglet==1.3.2
+RUN pip install pyglet==1.4.10
 
 # https://click.palletsprojects.com/en/7.x/python3/
 ENV LC_ALL=C.UTF-8
