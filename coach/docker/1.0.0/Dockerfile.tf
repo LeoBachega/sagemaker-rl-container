@@ -30,6 +30,7 @@ RUN pip install --no-cache-dir \
     pyglet==1.3.2 \
     gym==0.12.5 \
     redis==2.10.6 \
+    minio==4.0.5 \
     rl-coach-slim==1.0.0 && \
     pip install --no-cache-dir --upgrade sagemaker-containers && \
     pip install --upgrade numpy
