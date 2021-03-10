@@ -7,8 +7,8 @@ env:
     RAY_TORCH_FRAMEWORK_VERSION: '1.5.0'
     CPU_INSTANCE_TYPE: 'ml.c4.xlarge'
     GPU_INSTANCE_TYPE: 'ml.p2.xlarge'
-    PY_VERSION: '36'
-    TORCH_PY_VERSION: '37'
+    PY_VERSION: '37'
+    TORCH_PY_VERSION: '36'
     BASE_ECR_REPO: 'sagemaker-rl-ray-container'    # previous images repo for layer cache, same name as pro image repo
     PREPROD_ECR_REPO: 'sagemaker-test'
     PROD_ECR_REPO: 'sagemaker-rl-ray-container'
