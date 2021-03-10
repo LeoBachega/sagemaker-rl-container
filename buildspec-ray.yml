@@ -15,11 +15,11 @@ env:
     TEST_USER: 'LeoBachega'
     TEST_BRANCH: 'ray_tf_2_4'
     PROCESSOR: 'gpu'
-    FRAMEWORK_VERSION: '2.1.0'
+    FRAMEWORK_VERSION: '2.3.1'
     FRAMEWORK: 'tensorflow'
     FRAMEWORK_SHORT: 'tf'
-    PY_VERSION: '36'
-    OS: 'cu101-ubuntu18.04'
+    PY_VERSION: '37'
+    OS: 'cu102-ubuntu18.04'
 
 phases:
   pre_build:
